@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pl">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Documenty</title>
+	</head>
+	<body>
+		<div>
+			<h2>Rejestracja usera</h2>
+			<form id="registerForm">
+				<label for="emailRegistration">Email</label>
+				<input type="text" id="emailRegistration" />
+				<label for="passwordRegistration">Password</label>
+				<input type="text" id="passwordRegistration" />
+				<input type="submit" />
+			</form>
+
+			<h2>Logowanie usera</h2>
+			<form id="loginForm">
+				<label for="emailLogin">Email</label>
+				<input type="text" id="emailLogin" />
+				<label for="passwordLogin">Password</label>
+				<input type="text" id="passwordLogin" />
+				<input type="submit" />
+			</form>
+
+			<h2>Baza danych dodawanie</h2>
+			<form id="databaseInputForm">
+				<label for="emailInputDatabase">Email</label>
+				<input type="text" id="emailInputDatabase" />
+				<label for="passwordInputDatabase">Password</label>
+				<input type="text" id="passwordInputDatabase" />
+				<input type="submit" />
+			</form>
+
+			<h2>Wyświetlanie bazy danych</h2>
+			<form id="displayDb">
+				<input type="submit" value="wyświetl baze danych" />
+			</form>
+
+			<h2>Baza danych usuwanie po Id</h2>
+			<form id="databaseDeleteForm">
+				<label for="idDeleteDatabase">ID</label>
+				<input type="text" id="idDeleteDatabase" />
+				<input type="submit" />
+			</form>
+
+			<h2>Upload</h2>
+			<form id="uploadFileForm">
+				<input type="file" id="uploadFile" />
+				<input type="submit" />
+			</form>
+		</div>
+
+		<div>
+			<h2>Obsługa samochodu</h2>
+			<form id="carForm">
+				<label for="carName">nazwa samochodu</label>
+				<input type="text" id="carName" /><br />
+				<label for="carNr">nr samochodu</label>
+				<input type="text" id="carNr" /><br />
+				<label for="carPhoto">zdjęcie samochodu</label>
+				<input type="file" id="carPhoto" />
+				<br />
+				<input type="submit" />
+			</form>
+
+			<h2>rezerwacji auta</h2>
+			<form id="bookCarForm">
+				<label for="bookName">imie</label>
+				<input type="text" id="bookName" /><br />
+				<label for="bookSureName">nazwisko</label>
+				<input type="text" id="bookSureName" /><br />
+				<label for="regCust">czy regularny klient?</label>
+				<input type="checkbox" id="regCust" /><br />
+				<label for="startDate">początek wynajmu</label>
+				<input type="date" id="startDate" /><br />
+				<label for="endDate">koniec wynajmu</label>
+				<input type="date" id="endDate" /><br />
+				
+				<label for="carSelect">samochód</label>
+				<select id="carSelect">
+					<option value="">proszę wybrac auto</option>
+				</select>
+				<br />
+				
+				
+				<input type="submit" />
+			</form>
+
+
+
+		</div>
+
+		<script type="module" src="index.js"></script>
+	</body>
+</html>
