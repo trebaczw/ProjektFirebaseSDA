@@ -5,6 +5,7 @@ import {
 	doc,
 	onSnapshot,
 	deleteDoc,
+	getDoc,
 } from "firebase/firestore";
 import { app, database, storage } from "./firebaseConfig";
 import {
@@ -44,9 +45,18 @@ const carName = document.querySelector("#carName");
 const carNr = document.querySelector("#carNr");
 const carPhoto = document.querySelector("#carPhoto");
 
+const bookCarForm = document.querySelector("#bookCarForm");
+const bookName = document.querySelector("#bookName");
+const bookSureName = document.querySelector("#bookSureName");
+const regCust = document.querySelector("#regCust");
+const startDate = document.querySelector("#startDate");
+const endDate = document.querySelector("#endDate");
+const carSelect = document.querySelector("#carSelect");
+
 const auth = getAuth();
 const collectionRef = collection(database, "uzytkownicy");
 const collectionCarsRef = collection(database, "cars");
+let carList = [];
 
 const registration = async (event) => {
 	event.preventDefault();
@@ -118,6 +128,7 @@ const displayDatabase = async (event) => {
 			return { ...item.data(), id: item.id };
 		})
 	);
+	console.log(carList);
 };
 
 const snapshotData = () => {
@@ -202,22 +213,52 @@ const uploadCar = async (event) => {
 	);
 };
 
-const addReservation = async () => {
-	// event.preventDefault();
-	const carNameValue = carName.value;
-	const carNrValue = carNr.value;
+const addReservation = async (event) => {
+	event.preventDefault();
+	const bookNameValue = bookName.value;
+	const bookSureNameValue = bookSureName.value;
+	const regCustValue = regCust.checked;
+	const startDateValue = startDate.value;
+	const endDateValue = endDate.value;
+
+	const docRef = doc(database, "cars", carSelect.value);
+
 	try {
+		const carObject = await getDoc(docRef);
 		const response = await addDoc(collectionRef, {
-			name: carNameValue,
-			number: carNrValue,
+			name: bookNameValue,
+			surename: bookSureNameValue,
+			regular: regCustValue,
+			startDate: startDateValue,
+			endDate: endDateValue,
+			car: carObject,
 		});
 		console.log(response);
+		alert("dokonano rezerwacji");
 	} catch (error) {
 		console.log(error);
 	}
 };
 
-snapshotData();
+const snapshotCars = () => {
+	onSnapshot(collectionCarsRef, (data) => {
+		carList = [];
+		carSelect.innerHTML = "";
+		data.docs.forEach((item) => {
+			carList.push({ ...item.data(), id: item.id });
+		});
+		carList.forEach((car) => {
+			const option = document.createElement("option");
+			option.value = car.id;
+			option.textContent = `${car.name} nr rej. ${car.number}`;
+			carSelect.appendChild(option);
+		});
+		console.log(carList);
+	});
+};
+
+snapshotCars();
+// snapshotData();
 registerForm.addEventListener("submit", registration);
 loginForm.addEventListener("submit", login);
 databaseInputForm.addEventListener("submit", addDb);
@@ -225,3 +266,4 @@ displayDb.addEventListener("submit", displayDatabase);
 databaseDeleteForm.addEventListener("submit", deleteDatabase);
 uploadFileForm.addEventListener("submit", upload);
 carForm.addEventListener("submit", uploadCar);
+bookCarForm.addEventListener("submit", addReservation);

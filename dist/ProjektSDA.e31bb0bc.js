@@ -51791,9 +51791,17 @@ var carForm = document.querySelector("#carForm");
 var carName = document.querySelector("#carName");
 var carNr = document.querySelector("#carNr");
 var carPhoto = document.querySelector("#carPhoto");
+var bookCarForm = document.querySelector("#bookCarForm");
+var bookName = document.querySelector("#bookName");
+var bookSureName = document.querySelector("#bookSureName");
+var regCust = document.querySelector("#regCust");
+var startDate = document.querySelector("#startDate");
+var endDate = document.querySelector("#endDate");
+var carSelect = document.querySelector("#carSelect");
 var auth = (0, _auth.getAuth)();
 var collectionRef = (0, _firestore.collection)(_firebaseConfig.database, "uzytkownicy");
 var collectionCarsRef = (0, _firestore.collection)(_firebaseConfig.database, "cars");
+var carList = [];
 var registration = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(event) {
     var emailRegistrationValue, passwordRegistrationValue, message;
@@ -51919,7 +51927,8 @@ var displayDatabase = /*#__PURE__*/function () {
               id: item.id
             });
           }));
-        case 5:
+          console.log(carList);
+        case 6:
         case "end":
           return _context4.stop();
       }
@@ -52060,40 +52069,72 @@ var uploadCar = /*#__PURE__*/function () {
   };
 }();
 var addReservation = /*#__PURE__*/function () {
-  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9() {
-    var carNameValue, carNrValue, response;
+  var _ref9 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee9(event) {
+    var bookNameValue, bookSureNameValue, regCustValue, startDateValue, endDateValue, docRef, carObject, response;
     return _regeneratorRuntime().wrap(function _callee9$(_context9) {
       while (1) switch (_context9.prev = _context9.next) {
         case 0:
-          // event.preventDefault();
-          carNameValue = carName.value;
-          carNrValue = carNr.value;
-          _context9.prev = 2;
-          _context9.next = 5;
+          event.preventDefault();
+          bookNameValue = bookName.value;
+          bookSureNameValue = bookSureName.value;
+          regCustValue = regCust.checked;
+          startDateValue = startDate.value;
+          endDateValue = endDate.value;
+          docRef = (0, _firestore.doc)(_firebaseConfig.database, "cars", carSelect.value);
+          _context9.prev = 7;
+          _context9.next = 10;
+          return (0, _firestore.getDoc)(docRef);
+        case 10:
+          carObject = _context9.sent;
+          _context9.next = 13;
           return (0, _firestore.addDoc)(collectionRef, {
-            name: carNameValue,
-            number: carNrValue
+            name: bookNameValue,
+            surename: bookSureNameValue,
+            regular: regCustValue,
+            startDate: startDateValue,
+            endDate: endDateValue,
+            car: carObject
           });
-        case 5:
+        case 13:
           response = _context9.sent;
           console.log(response);
-          _context9.next = 12;
+          alert("dokonano rezerwacji");
+          _context9.next = 21;
           break;
-        case 9:
-          _context9.prev = 9;
-          _context9.t0 = _context9["catch"](2);
+        case 18:
+          _context9.prev = 18;
+          _context9.t0 = _context9["catch"](7);
           console.log(_context9.t0);
-        case 12:
+        case 21:
         case "end":
           return _context9.stop();
       }
-    }, _callee9, null, [[2, 9]]);
+    }, _callee9, null, [[7, 18]]);
   }));
-  return function addReservation() {
+  return function addReservation(_x8) {
     return _ref9.apply(this, arguments);
   };
 }();
-snapshotData();
+var snapshotCars = function snapshotCars() {
+  (0, _firestore.onSnapshot)(collectionCarsRef, function (data) {
+    carList = [];
+    carSelect.innerHTML = "";
+    data.docs.forEach(function (item) {
+      carList.push(_objectSpread(_objectSpread({}, item.data()), {}, {
+        id: item.id
+      }));
+    });
+    carList.forEach(function (car) {
+      var option = document.createElement("option");
+      option.value = car.id;
+      option.textContent = "".concat(car.name, " nr rej. ").concat(car.number);
+      carSelect.appendChild(option);
+    });
+    console.log(carList);
+  });
+};
+snapshotCars();
+// snapshotData();
 registerForm.addEventListener("submit", registration);
 loginForm.addEventListener("submit", login);
 databaseInputForm.addEventListener("submit", addDb);
@@ -52101,6 +52142,7 @@ displayDb.addEventListener("submit", displayDatabase);
 databaseDeleteForm.addEventListener("submit", deleteDatabase);
 uploadFileForm.addEventListener("submit", upload);
 carForm.addEventListener("submit", uploadCar);
+bookCarForm.addEventListener("submit", addReservation);
 },{"firebase/firestore":"node_modules/firebase/firestore/dist/esm/index.esm.js","./firebaseConfig":"firebaseConfig.js","firebase/storage":"node_modules/firebase/storage/dist/esm/index.esm.js","firebase/auth":"node_modules/firebase/auth/dist/esm/index.esm.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -52126,7 +52168,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53094" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61270" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
