@@ -51798,6 +51798,10 @@ var regCust = document.querySelector("#regCust");
 var startDate = document.querySelector("#startDate");
 var endDate = document.querySelector("#endDate");
 var carSelect = document.querySelector("#carSelect");
+var userList = document.querySelector("#userList");
+var userInfo = document.querySelector("#userInfo");
+var userSearch = document.querySelector("#userSearch");
+var userSearchList = document.querySelector("#userSearchList");
 var auth = (0, _auth.getAuth)();
 var collectionRef = (0, _firestore.collection)(_firebaseConfig.database, "uzytkownicy");
 var collectionCarsRef = (0, _firestore.collection)(_firebaseConfig.database, "cars");
@@ -52093,7 +52097,7 @@ var addReservation = /*#__PURE__*/function () {
             regular: regCustValue,
             startDate: startDateValue,
             endDate: endDateValue,
-            car: carObject
+            car: carObject.data()
           });
         case 13:
           response = _context9.sent;
@@ -52133,7 +52137,81 @@ var snapshotCars = function snapshotCars() {
     console.log(carList);
   });
 };
+var createList = function createList(list) {
+  userInfo.innerHTML = "";
+  list.forEach(function (item) {
+    var user = item.data();
+    var name = user.name,
+      surename = user.surename,
+      startDate = user.startDate,
+      endDate = user.endDate,
+      regular = user.regular,
+      _user$car = user.car,
+      nameCar = _user$car.name,
+      number = _user$car.number;
+    var li = document.createElement("li");
+    userInfo.appendChild(li);
+    var h2 = document.createElement("h2");
+    li.appendChild(h2);
+    h2.innerText = name + " " + surename;
+    var button = document.createElement("button");
+    li.appendChild(button);
+    button.innerText = "szczegóły";
+    var div = document.createElement("div");
+    li.appendChild(div);
+    var p = document.createElement("p");
+    div.appendChild(p);
+    div.classList = "divHidden";
+    p.innerText = "data rozpoczcz\u0119cia ".concat(startDate, ", data zako\u0144czenia ").concat(endDate);
+    var span = document.createElement("span");
+    div.appendChild(span);
+    div.style.display = "none";
+    span.innerText = "nazwa pojazdu ".concat(nameCar);
+    var h3Div = document.createElement("h3");
+    div.appendChild(h3Div);
+    h3Div.innerText = "numer pojazdu ".concat(number);
+    button.addEventListener("click", function () {
+      div.style.display = div.style.display === "none" ? "block" : "none";
+    });
+  });
+};
+var userDataSearch = /*#__PURE__*/function () {
+  var _ref10 = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee10(event) {
+    var surenameQuery, response;
+    return _regeneratorRuntime().wrap(function _callee10$(_context10) {
+      while (1) switch (_context10.prev = _context10.next) {
+        case 0:
+          event.preventDefault();
+          _context10.prev = 1;
+          surenameQuery = (0, _firestore.query)(collectionRef, (0, _firestore.where)("surename", "==", userSearchList.value));
+          _context10.next = 5;
+          return (0, _firestore.getDocs)(surenameQuery);
+        case 5:
+          response = _context10.sent;
+          createList(response);
+          _context10.next = 12;
+          break;
+        case 9:
+          _context10.prev = 9;
+          _context10.t0 = _context10["catch"](1);
+          console.log(_context10.t0);
+        case 12:
+        case "end":
+          return _context10.stop();
+      }
+    }, _callee10, null, [[1, 9]]);
+  }));
+  return function userDataSearch(_x9) {
+    return _ref10.apply(this, arguments);
+  };
+}();
+var spapshotUserList = function spapshotUserList() {
+  (0, _firestore.onSnapshot)(collectionRef, function (data) {
+    createList(data.docs);
+  });
+};
 snapshotCars();
+spapshotUserList();
 // snapshotData();
 registerForm.addEventListener("submit", registration);
 loginForm.addEventListener("submit", login);
@@ -52143,6 +52221,7 @@ databaseDeleteForm.addEventListener("submit", deleteDatabase);
 uploadFileForm.addEventListener("submit", upload);
 carForm.addEventListener("submit", uploadCar);
 bookCarForm.addEventListener("submit", addReservation);
+userSearch.addEventListener("submit", userDataSearch);
 },{"firebase/firestore":"node_modules/firebase/firestore/dist/esm/index.esm.js","./firebaseConfig":"firebaseConfig.js","firebase/storage":"node_modules/firebase/storage/dist/esm/index.esm.js","firebase/auth":"node_modules/firebase/auth/dist/esm/index.esm.js"}],"node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -52168,7 +52247,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "61270" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58200" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];

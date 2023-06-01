@@ -6,6 +6,8 @@ import {
 	onSnapshot,
 	deleteDoc,
 	getDoc,
+	query,
+	where,
 } from "firebase/firestore";
 import { app, database, storage } from "./firebaseConfig";
 import {
@@ -52,6 +54,12 @@ const regCust = document.querySelector("#regCust");
 const startDate = document.querySelector("#startDate");
 const endDate = document.querySelector("#endDate");
 const carSelect = document.querySelector("#carSelect");
+
+const userList = document.querySelector("#userList");
+const userInfo = document.querySelector("#userInfo");
+
+const userSearch = document.querySelector("#userSearch");
+const userSearchList = document.querySelector("#userSearchList");
 
 const auth = getAuth();
 const collectionRef = collection(database, "uzytkownicy");
@@ -231,7 +239,7 @@ const addReservation = async (event) => {
 			regular: regCustValue,
 			startDate: startDateValue,
 			endDate: endDateValue,
-			car: carObject,
+			car: carObject.data(),
 		});
 		console.log(response);
 		alert("dokonano rezerwacji");
@@ -257,7 +265,72 @@ const snapshotCars = () => {
 	});
 };
 
+const createList = (list)=>{
+	userInfo.innerHTML = "";
+	list.forEach((item) => {
+		const user = item.data();
+		const {
+			name,
+			surename,
+			startDate,
+			endDate,
+			regular,
+			car: { name: nameCar, number },
+		} = user;
+		const li = document.createElement("li");
+		userInfo.appendChild(li);
+		const h2 = document.createElement("h2");
+		li.appendChild(h2);
+		h2.innerText = name + " " + surename;
+		const button = document.createElement("button");
+		li.appendChild(button);
+		button.innerText = "szczegóły";
+		const div = document.createElement("div");
+		li.appendChild(div);
+		const p = document.createElement("p");
+		div.appendChild(p);
+		div.classList = "divHidden";
+		p.innerText = `data rozpoczczęcia ${startDate}, data zakończenia ${endDate}`;
+		const span = document.createElement("span");
+		div.appendChild(span);
+		div.style.display = "none";
+		span.innerText = `nazwa pojazdu ${nameCar}`;
+		const h3Div = document.createElement("h3");
+		div.appendChild(h3Div);
+		h3Div.innerText = `numer pojazdu ${number}`;
+
+		button.addEventListener("click", function () {
+			div.style.display = div.style.display === "none" ? "block" : "none";
+		});
+	})
+
+
+}
+
+const userDataSearch = async (event) => {
+	event.preventDefault();
+
+	try {
+		const surenameQuery = query(
+			collectionRef,
+			where("surename", "==", userSearchList.value)
+		);
+		const response = await getDocs(surenameQuery);
+		createList(response)
+		;
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+const spapshotUserList = () => {
+	onSnapshot(collectionRef, (data) => {
+		createList(data.docs)
+	});
+};
+
 snapshotCars();
+spapshotUserList();
 // snapshotData();
 registerForm.addEventListener("submit", registration);
 loginForm.addEventListener("submit", login);
@@ -267,3 +340,4 @@ databaseDeleteForm.addEventListener("submit", deleteDatabase);
 uploadFileForm.addEventListener("submit", upload);
 carForm.addEventListener("submit", uploadCar);
 bookCarForm.addEventListener("submit", addReservation);
+userSearch.addEventListener("submit", userDataSearch);
